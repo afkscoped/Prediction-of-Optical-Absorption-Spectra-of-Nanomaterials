@@ -1,0 +1,11 @@
+torch
+lightning
+opencv-python
+scikit-image
+scikit-learn
+pandas
+numpy<2.0
+matplotlib
+miepython
+PyMieScatt
+tqdm

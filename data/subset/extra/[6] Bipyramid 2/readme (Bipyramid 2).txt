@@ -1,0 +1,1 @@
+This subfolder contains transmission electron microscopy (TEM) images of Bipyramid 2.

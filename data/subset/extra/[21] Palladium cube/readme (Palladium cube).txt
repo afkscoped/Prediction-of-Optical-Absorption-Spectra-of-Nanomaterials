@@ -1,0 +1,1 @@
+This subfolder contains scanning electron microscopy (SEM) images of Palladium cube.
