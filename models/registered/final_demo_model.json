@@ -1,0 +1,7 @@
+{
+  "model_name": "final_demo_model",
+  "path": "models/registered/final_demo_model.pth",
+  "origin": "fine-tuned",
+  "notes": "User uploaded fine-tuned model checkpoint",
+  "registered_at": "2026-01-19T20:34:19.483043"
+}

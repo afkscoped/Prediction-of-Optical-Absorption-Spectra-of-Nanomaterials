@@ -4,8 +4,11 @@ opencv-python
 scikit-image
 scikit-learn
 pandas
-numpy<2.0
+numpy
 matplotlib
 miepython
 PyMieScatt
 tqdm
+fastapi
+uvicorn
+python-multipart

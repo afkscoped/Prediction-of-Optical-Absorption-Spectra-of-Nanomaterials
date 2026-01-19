@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import UploadDropzone from './components/UploadDropzone';
@@ -15,6 +15,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [showDatasetBrowser, setShowDatasetBrowser] = useState(false);
+  const [selectedModel, setSelectedModel] = useState("final_demo_model");
 
   const scrollToWorkspace = () => {
     const el = document.getElementById('workspace');
@@ -70,6 +71,12 @@ function App() {
     };
   };
 
+  useEffect(() => {
+    if (file && !file.datasetItem && showResults) {
+      handlePredict();
+    }
+  }, [selectedModel]);
+
   const handlePredict = async () => {
     if (!file) return;
     setLoading(true);
@@ -86,7 +93,7 @@ function App() {
         const formData = new FormData();
         formData.append("file", file);
 
-        const response = await fetch("http://localhost:8000/predict", {
+        const response = await fetch(`http://localhost:8000/predict?model=${selectedModel}`, {
           method: "POST",
           body: formData,
         });
@@ -265,6 +272,8 @@ function App() {
                         peak={prediction.peak}
                         fwhm={prediction.fwhm}
                         confidence={prediction.confidence || 87}
+                        selectedModel={selectedModel}
+                        onModelChange={setSelectedModel}
                       />
                     </motion.div>
                   )}

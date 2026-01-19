@@ -1,0 +1,7 @@
+{
+  "model_name": "physics_pretrained",
+  "path": "models/registered/spectrum_mlp.pth",
+  "origin": "pretrained",
+  "notes": "Original physics-guided baseline model",
+  "registered_at": "2026-01-19T20:34:19.469326"
+}

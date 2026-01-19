@@ -1,0 +1,32 @@
+{
+  "run_id": "2026-01-19T21:38:07.475306",
+  "n_samples": 12,
+  "models": {
+    "final_demo_model": {
+      "mse": 0.8114048437267466,
+      "rmse": 0.8815285111848388,
+      "mae": 0.8213699206816022,
+      "sam_deg": 119.27032909818718,
+      "peak_error_mean": 244.0,
+      "peak_error_std": 59.39696961966999,
+      "samples_with_gt": 2,
+      "tp": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    },
+    "physics_pretrained": {
+      "mse": 0.22130653600495281,
+      "rmse": 0.4692901179940965,
+      "mae": 0.42335405234844004,
+      "sam_deg": 41.35399233174487,
+      "peak_error_mean": 256.0,
+      "peak_error_std": 56.568542494923804,
+      "samples_with_gt": 2,
+      "tp": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0
+    }
+  }
+}

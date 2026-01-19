@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 import CountUp from "react-countup";
+import { ChevronDown, Box } from "lucide-react";
 
 const MetricCard = ({ label, value, unit, delay, color = "#00d4c0" }) => (
     <motion.div
@@ -23,12 +24,24 @@ const MetricCard = ({ label, value, unit, delay, color = "#00d4c0" }) => (
     </motion.div>
 );
 
-export default function PredictionCard({ data, peak, fwhm, confidence = 87 }) {
+export default function PredictionCard({ data, peak, fwhm, confidence = 87, selectedModel, onModelChange }) {
     const [animationComplete, setAnimationComplete] = useState(false);
+    const [models, setModels] = useState([]);
+    const [showModelMenu, setShowModelMenu] = useState(false);
 
     useEffect(() => {
         const timer = setTimeout(() => setAnimationComplete(true), 800);
         return () => clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
+        // Fetch models
+        fetch("http://localhost:8000/models")
+            .then(res => res.json())
+            .then(data => {
+                if (data.models) setModels(data.models);
+            })
+            .catch(err => console.error("Failed to load models", err));
     }, []);
 
     // Calculate proper Y-axis domain based on data
@@ -42,6 +55,8 @@ export default function PredictionCard({ data, peak, fwhm, confidence = 87 }) {
     };
 
     const yDomain = getYDomain();
+
+    const currentModelName = selectedModel || "Default Model";
 
     return (
         <motion.div
@@ -64,7 +79,40 @@ export default function PredictionCard({ data, peak, fwhm, confidence = 87 }) {
                     transition={{ delay: 0.2 }}
                 >
                     <h3 className="text-3xl font-bold text-white tracking-tight">Predicted Spectrum</h3>
-                    <p className="text-base text-[#98a6b0] mt-1">Full absorption extraction from TEM analysis</p>
+                    <div className="flex items-center gap-3 mt-1">
+                        <p className="text-base text-[#98a6b0]">Full absorption extraction</p>
+
+                        {/* Model Selector Badge */}
+                        <div className="relative">
+                            <button
+                                onClick={() => setShowModelMenu(!showModelMenu)}
+                                className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 transition-colors text-xs font-medium text-white/80"
+                            >
+                                <Box size={12} className="text-[#00d4c0]" />
+                                {currentModelName}
+                                <ChevronDown size={12} />
+                            </button>
+
+                            {showModelMenu && (
+                                <div className="absolute top-full left-0 mt-2 w-48 bg-[#0a0c10] border border-white/10 rounded-xl overflow-hidden shadow-2xl z-50">
+                                    <div className="p-1">
+                                        {models.map(model => (
+                                            <button
+                                                key={model.model_name}
+                                                onClick={() => {
+                                                    if (onModelChange) onModelChange(model.model_name);
+                                                    setShowModelMenu(false);
+                                                }}
+                                                className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${selectedModel === model.model_name ? 'bg-[#00d4c0]/10 text-[#00d4c0]' : 'text-gray-400 hover:bg-white/5 hover:text-white'}`}
+                                            >
+                                                {model.model_name}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </motion.div>
 
                 <motion.div
@@ -96,7 +144,7 @@ export default function PredictionCard({ data, peak, fwhm, confidence = 87 }) {
                     transition={{ delay: 0.4, duration: 0.6 }}
                 >
                     <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+                        <AreaChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 20 }}>
                             <defs>
                                 <linearGradient id="spectrumGrad" x1="0" y1="0" x2="0" y2="1">
                                     <stop offset="0%" stopColor="#00d4c0" stopOpacity={0.4} />
@@ -119,7 +167,7 @@ export default function PredictionCard({ data, peak, fwhm, confidence = 87 }) {
                                 axisLine={{ stroke: 'rgba(255,255,255,0.05)' }}
                                 tickLine={false}
                                 tickFormatter={(v) => `${v}`}
-                                label={{ value: 'Wavelength (nm)', position: 'insideBottom', offset: -5, fill: '#98a6b0', fontSize: 12 }}
+                                label={{ value: 'Wavelength (nm)', position: 'insideBottom', offset: -10, fill: '#98a6b0', fontSize: 12 }}
                             />
                             <YAxis
                                 domain={yDomain}
@@ -127,7 +175,7 @@ export default function PredictionCard({ data, peak, fwhm, confidence = 87 }) {
                                 axisLine={{ stroke: 'rgba(255,255,255,0.05)' }}
                                 tickLine={false}
                                 tickFormatter={(v) => v.toFixed(4)}
-                                label={{ value: 'Extinction (a.u.)', angle: -90, position: 'insideLeft', fill: '#98a6b0', fontSize: 12 }}
+                                label={{ value: 'Absorbance (a.u.)', angle: -90, position: 'insideLeft', fill: '#98a6b0', fontSize: 12 }}
                                 width={80}
                             />
                             <Tooltip
@@ -168,3 +216,7 @@ export default function PredictionCard({ data, peak, fwhm, confidence = 87 }) {
         </motion.div>
     );
 }
+
+
+
+
